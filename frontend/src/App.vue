@@ -6,7 +6,7 @@ import Chart from '@/components/Chart.vue'
 <template>
   <h1>WaiHus</h1>
   <NavBar />
-  <chart />
+  <Chart />
 </template>
 
 <style scoped></style>
