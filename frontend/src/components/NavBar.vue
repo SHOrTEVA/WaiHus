@@ -8,19 +8,15 @@
     </nav>
 </template>
 
-<script>
-export default {
-    name: "NavBar",
-    data() {
-        return {
-            menuItems: [
-                { text: "Home", link: "/" },
-                { text: "About", link: "/about" },
-                { text: "Contact", link: "/contact" },
-            ],
-        };
-    },
-};
+<script setup lang="ts">
+import { ref } from 'vue';
+
+const menuItems = ref([
+    { text: "Home", link: "/" },
+    { text: "About", link: "/about" },
+    { text: "Contact", link: "/contact" },
+]);
+
 </script>
 
 <style scoped>

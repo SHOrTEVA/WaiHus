@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from 'vue';
 
-isBarSelected = ref(true);
-isTableSelected = ref(false);
+const isBarSelected = ref(true);
+const isTableSelected = ref(false);
 
 
 </script>
