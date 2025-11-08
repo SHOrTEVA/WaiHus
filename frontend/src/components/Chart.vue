@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
+import axios from 'axios';
 
 const isBarSelected = ref(true);
 const isTableSelected = ref(false);
 
+onMounted(async () => {
+    try {
+        const response = await axios.get('https://api.jikan.moe/v4/seasons/2021/fall?sfw');
+        console.log(response.data);
+    } catch (err) {
+        console.error(err);
+    }
+});
 
 </script>
 
