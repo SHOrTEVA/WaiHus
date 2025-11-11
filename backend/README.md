@@ -1,26 +1,36 @@
-# WaiHus Go Backend (minimal)
+# WaiHus Backend (Python)
 
-This is a minimal Go backend that stores anonymous votes in a local SQLite database and exposes the following endpoints:
+Simple FastAPI + SQLite backend for anonymous voting.
 
-- POST /api/vote  { characterId, name, image_url }
-- GET  /api/report -> aggregated counts per character (JSON)
-- GET  /api/votes  -> raw votes (JSON)
-- GET  /api/export -> aggregated CSV (download)
+Endpoints:
+- POST /api/vote { characterId, name, image_url }
+- GET  /api/report -> aggregated counts
+- GET  /api/votes  -> raw votes
+- GET  /api/export -> CSV download of aggregated counts
 
-Notes:
-- Uses `modernc.org/sqlite` driver (pure-Go SQLite) to avoid cgo on Windows.
-- Default listen port: 3001 (set via PORT env var to change)
-
-Run locally:
+## Run locally (Python)
 
 ```powershell
-cd backend-go
-go mod tidy
-go run main.go
+cd backend
+pip install -r requirements.txt
+python -m uvicorn main:app --reload --port 3000
 ```
 
-Then point the frontend to the Go backend API (default http://localhost:3001). For example, update `Chart.vue` `axios.post`/`axios.get` URLs if you prefer the Go backend port.
+Or:
 
-If you want the server to listen on port 3000, set `PORT=3000` before starting.
+```bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload --port 3000
+```
 
-Windows note: `modernc.org/sqlite` is pure Go and should work without installing extra C toolchains.
+The server listens on port 3000 by default.
+
+## Database
+
+SQLite is auto-initialized when the app starts. The database file `votes.db` is created in the `backend/` folder.
+
+## Development
+
+- FastAPI automatically generates API docs at `http://localhost:3000/docs` (Swagger UI)
+- Use `--reload` flag to auto-restart on code changes
