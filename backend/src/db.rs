@@ -3,7 +3,7 @@ use std::env;
 
 pub async fn init_db() -> Result<SqlitePool, sqlx::Error> {
     let database_url = env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "sqlite://votes.db".to_string());
+        .unwrap_or_else(|_| "sqlite://./votes.db".to_string());
 
     let pool = SqlitePool::connect(&database_url).await?;
 
