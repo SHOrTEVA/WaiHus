@@ -34,19 +34,22 @@ pub async fn submit_vote(
 }
 
 pub async fn get_report(pool: web::Data<SqlitePool>) -> Result<HttpResponse> {
-    let rows: Vec<ReportItem> = sqlx::query_as(
+    let result = sqlx::query_as::<_, ReportItem>(
         r#"
         SELECT character_id, name, image_url, COUNT(*) as votes
         FROM votes
-        GROUP BY character_id
+        GROUP BY character_id, name, image_url
         ORDER BY votes DESC
         "#,
     )
     .fetch_all(pool.get_ref())
-    .await
-    .unwrap_or_default();
+    .await;
 
-    Ok(HttpResponse::Ok().json(rows))
+    match result {
+        Ok(rows) => Ok(HttpResponse::Ok().json(rows)),
+        Err(err) => Ok(HttpResponse::InternalServerError()
+            .json(serde_json::json!({"error": format!("Failed to fetch report: {}", err)}))),
+    }
 }
 
 pub async fn get_votes(pool: web::Data<SqlitePool>) -> Result<HttpResponse> {
