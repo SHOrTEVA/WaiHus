@@ -4,6 +4,7 @@ mod handlers;
 
 use actix_web::{web, App, HttpServer, middleware};
 use std::sync::Arc;
+use env_logger::init_from_env;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
