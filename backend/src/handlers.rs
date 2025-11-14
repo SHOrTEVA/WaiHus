@@ -53,7 +53,7 @@ pub async fn get_report(pool: web::Data<SqlitePool>) -> Result<HttpResponse> {
 }
 
 pub async fn get_votes(pool: web::Data<SqlitePool>) -> Result<HttpResponse> {
-    let rows: Vec<Vote> = sqlx::query_as(
+    let result = sqlx::query_as::<_, Vote>(
         r#"
         SELECT id, character_id, name, image_url, 
                strftime('%Y-%m-%d %H:%M:%S', created_at) as created_at
@@ -62,14 +62,17 @@ pub async fn get_votes(pool: web::Data<SqlitePool>) -> Result<HttpResponse> {
         "#,
     )
     .fetch_all(pool.get_ref())
-    .await
-    .unwrap_or_default();
+    .await;
 
-    Ok(HttpResponse::Ok().json(rows))
+    match result {
+        Ok(rows) => Ok(HttpResponse::Ok().json(rows)),
+        Err(err) => Ok(HttpResponse::InternalServerError()
+            .json(serde_json::json!({"error": format!("Failed to fetch votes: {}", err)}))),
+    }
 }
 
 pub async fn export_csv(pool: web::Data<SqlitePool>) -> Result<HttpResponse> {
-    let rows: Vec<(String, Option<String>, i64)> = sqlx::query_as(
+    let result = sqlx::query_as::<_, (String, Option<String>, i64)>(
         r#"
         SELECT character_id, name, COUNT(*) as votes
         FROM votes
@@ -78,20 +81,25 @@ pub async fn export_csv(pool: web::Data<SqlitePool>) -> Result<HttpResponse> {
         "#,
     )
     .fetch_all(pool.get_ref())
-    .await
-    .unwrap_or_default();
+    .await;
 
-    let mut csv_data = String::from("characterId,name,votes\n");
-    for (char_id, name, votes) in rows {
-        let name_escaped = name.unwrap_or_default().replace("\"", "\"\"");
-        csv_data.push_str(&format!(
-            "{},\"{}\",{}\n",
-            char_id, name_escaped, votes
-        ));
+    match result {
+        Ok(rows) => {
+            let mut csv_data = String::from("characterId,name,votes\n");
+            for (char_id, name, votes) in rows {
+                let name_escaped = name.unwrap_or_default().replace("\"", "\"\"");
+                csv_data.push_str(&format!(
+                    "{},\"{}\",{}\n",
+                    char_id, name_escaped, votes
+                ));
+            }
+
+            Ok(HttpResponse::Ok()
+                .content_type("text/csv")
+                .insert_header(("Content-Disposition", "attachment; filename=\"report.csv\""))
+                .body(csv_data))
+        }
+        Err(err) => Ok(HttpResponse::InternalServerError()
+            .json(serde_json::json!({"error": format!("Failed to export CSV: {}", err)}))),
     }
-
-    Ok(HttpResponse::Ok()
-        .content_type("text/csv")
-        .insert_header(("Content-Disposition", "attachment; filename=\"report.csv\""))
-        .body(csv_data))
 }
