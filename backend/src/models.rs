@@ -17,7 +17,7 @@ pub struct Vote {
     pub created_at: String,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(sqlx::FromRow, Serialize, Deserialize, Debug)]
 pub struct ReportItem {
     pub character_id: String,
     pub name: Option<String>,
