@@ -21,6 +21,7 @@ const searchParams = ref<SearchParams>({
     order_by: "favorites",
     sort: "desc"
 });
+const host = 'http://localhost:3000'
 
 const fetchCharacters = async () => {
     try {
@@ -34,7 +35,7 @@ const fetchCharacters = async () => {
 
 const submitVote = async (char: any) => {
     try {
-        await axios.post('http://localhost:3000/api/vote', {
+        await axios.post(`${host}/api/vote`, {
             characterId: char.mal_id,
             name: char.name,
             image_url: char.images?.jpg?.image_url || null
@@ -50,7 +51,7 @@ const submitVote = async (char: any) => {
 
 const fetchReport = async () => {
     try {
-        const res = await axios.get('http://localhost:3000/api/report');
+        const res = await axios.get(`${host}/api/report`);
         report.value = res.data;
     } catch (err) {
         console.error(err);
@@ -59,7 +60,7 @@ const fetchReport = async () => {
 
 const downloadCSV = () => {
     // trigger backend CSV download
-    window.open('http://localhost:3000/api/export', '_blank');
+    window.open(`${host}/api/export`, '_blank');
 };
 
 </script>
