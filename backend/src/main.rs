@@ -3,7 +3,7 @@ mod models;
 mod handlers;
 
 use actix_web::{web, App, HttpServer, middleware};
-use actix_cors::Cors;
+use actix_rt::Cors;
 use std::sync::Arc;
 use env_logger::init_from_env;
 
