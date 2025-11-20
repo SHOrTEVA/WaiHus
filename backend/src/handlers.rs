@@ -35,6 +35,14 @@ pub async fn submit_vote(
     }
 }
 
+pub async fn handle_options() -> HttpResponse {
+    HttpResponse::Ok()
+        .insert_header(("Access-Control-Allow-Origin", "*"))
+        .insert_header(("Access-Control-Allow-Methods", "POST, OPTIONS"))
+        .insert_header(("Access-Control-Allow-Headers", "Content-Type"))
+        .finish()
+}
+
 pub async fn get_report(pool: web::Data<SqlitePool>) -> Result<HttpResponse> {
     let result = sqlx::query_as::<_, ReportItem>(
         r#"
