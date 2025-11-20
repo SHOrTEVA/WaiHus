@@ -7,6 +7,7 @@ pub async fn submit_vote(
     body: web::Json<VoteRequest>,
 ) -> Result<HttpResponse> {
     println!("Submit vote");
+    println!("Request body: {:?}", body);
     if body.character_id.is_empty() {
         return Ok(HttpResponse::BadRequest()
             .json(serde_json::json!({"error": "character_id is required"})));
