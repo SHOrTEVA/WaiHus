@@ -30,7 +30,7 @@ async fn main() -> std::io::Result<()> {
                     .add(("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"))
                     .add(("Access-Control-Allow-Headers", "Content-Type"))
             )
-            .wrap(Cors::default)
+            .wrap(Cors::default())
             .route("/api/vote", web::post().to(handlers::submit_vote))
             .route("/api/report", web::get().to(handlers::get_report))
             .route("/api/votes", web::get().to(handlers::get_votes))
