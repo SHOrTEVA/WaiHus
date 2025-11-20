@@ -3,6 +3,7 @@ mod models;
 mod handlers;
 
 use actix_web::{web, App, HttpServer, middleware};
+use actix_cors::Cors;
 use std::sync::Arc;
 use env_logger::init_from_env;
 
@@ -29,8 +30,8 @@ async fn main() -> std::io::Result<()> {
                     .add(("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"))
                     .add(("Access-Control-Allow-Headers", "Content-Type"))
             )
+            .wrap(Cors::default)
             .route("/api/vote", web::post().to(handlers::submit_vote))
-            .route("/api/vote", web::options().to(handlers::handle_options))
             .route("/api/report", web::get().to(handlers::get_report))
             .route("/api/votes", web::get().to(handlers::get_votes))
             .route("/api/export", web::get().to(handlers::export_csv))
