@@ -36,7 +36,7 @@ const fetchCharacters = async () => {
 const submitVote = async (char: any) => {
     try {
         await axios.post(`${host}/api/vote`, {
-            characterId: char.mal_id,
+            character_id: String(char.mal_id),
             name: char.name,
             image_url: char.images?.jpg?.image_url || null
         });
