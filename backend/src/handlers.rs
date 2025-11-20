@@ -6,6 +6,7 @@ pub async fn submit_vote(
     pool: web::Data<SqlitePool>,
     body: web::Json<VoteRequest>,
 ) -> Result<HttpResponse> {
+    println!("Submit vote");
     if body.character_id.is_empty() {
         return Ok(HttpResponse::BadRequest()
             .json(serde_json::json!({"error": "character_id is required"})));
