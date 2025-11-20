@@ -30,7 +30,16 @@ async fn main() -> std::io::Result<()> {
                     .add(("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"))
                     .add(("Access-Control-Allow-Headers", "Content-Type"))
             )
-            .wrap(Cors::default())
+            .wrap(
+                Cors::default()
+                    // For local development prefer explicitly listing the origin:
+                    //.allowed_origin("http://localhost:3000")
+                    // Or for quick testing only: 
+                    .allow_any_origin()
+                    .allowed_methods(vec!["POST", "GET", "OPTIONS"])
+                    .allowed_headers(vec![header::CONTENT_TYPE, header::AUTHORIZATION, header::ACCEPT])
+                    .max_age(3600)
+            )
             .route("/api/vote", web::post().to(handlers::submit_vote))
             .route("/api/report", web::get().to(handlers::get_report))
             .route("/api/votes", web::get().to(handlers::get_votes))
